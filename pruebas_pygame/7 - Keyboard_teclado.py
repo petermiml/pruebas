@@ -1,6 +1,9 @@
 import pygame, sys
 from funciones_prueba import posicionAleatoria
 
+''' IDEA PARA FUTURA IMPLEMENTACION: Hacer que cuando aceleras la nave, no pueda decelerar a no ser que use retropropulsores
+pero esos retropropulsores gastan combustible.'''
+
 pygame.init()
 
 # Definir los colores:
@@ -16,12 +19,19 @@ GREY = ((150,150,150))
 
 # Definir las coordenadas:
 
-coord_x = 100
-coord_y = 100
+coord_x_nave1 = 500
+coord_y_nave1 = 300
+
+coord_x_nave2 = 100
+coord_y_nave2 = 300
+
 
 # Definir la velocidad:
-speed_x = 3
-speed_y = 3
+speed_x_nave1 = 0
+speed_y_nave1 = 0
+
+speed_x_nave2 = 0
+speed_y_nave2 = 0
 
 size = 800,600
 screen = pygame.display.set_mode((size))
@@ -44,7 +54,56 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
+
+        # EVENTOS DE TECLADO (tienen que ir en este punto).
+        # Revisar https://www.pygame.org/docs/ref/key.html para ver todas las teclas
+
+        if event.type == pygame.KEYDOWN:        # Si el tipo de evento es de tipo "presionar una tecla"     
+            if event.key == pygame.K_LEFT:      # Si la tecla presionada es la flecha de direccion izquierda
+                speed_x_nave1 = -3                    # Pone la velocidad a menos tres.
+                
+            if event.key == pygame.K_RIGHT:
+                speed_x_nave1 = 3
+                
+            if event.key == pygame.K_UP:
+                speed_y_nave1 = -3
+                
+            if event.key == pygame.K_DOWN:
+                speed_y_nave1 = 3
+                
+        if event.type == pygame.KEYUP:          # Si el tipo de evento es de tipo "dejar de presionar una tecla"
+            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+                speed_x_nave1 = 0                     # sea la tecla que sea, la velocidad se iguala a 0
+            if event.key == pygame.K_DOWN:
+                speed_y_nave1=0
+            if event.key == pygame.K_UP:
+                speed_y_nave1=0
     
+        # Eventos para la nave 2
+
+        if event.type == pygame.KEYDOWN:        # Si el tipo de evento es de tipo "presionar una tecla"     
+            if event.key == pygame.K_a:      # Si la tecla presionada es la flecha de direccion izquierda
+                speed_x_nave2 = -3                    # Pone la velocidad a menos tres.
+                
+            if event.key == pygame.K_d:
+                speed_x_nave2 = 3
+                
+            if event.key == pygame.K_w:
+                speed_y_nave2 = -3
+                
+            if event.key == pygame.K_s:
+                speed_y_nave2 = 3
+                
+        if event.type == pygame.KEYUP:          # Si el tipo de evento es de tipo "dejar de presionar una tecla"
+            if event.key == pygame.K_a:
+                speed_x_nave2 = 0                     
+            if event.key == pygame.K_d:
+                speed_x_nave2 = 0
+            if event.key == pygame.K_s:
+                speed_y_nave2 = 0
+            if event.key == pygame.K_w:
+                speed_y_nave2 = 0
+
     screen.fill(BLACK)
     
     # ============================== AREA DE DIBUJO ===============================
@@ -80,30 +139,13 @@ while True:
     pos_x = posicion_raton[0]
     pos_y = posicion_raton[1]
 
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_LEFT:
-            speed_x = -3
-            coord_x += speed_x
+    pygame.draw.polygon(screen, YELLOW, (((coord_x_nave1-20),(coord_y_nave1+40)),((coord_x_nave1),(coord_y_nave1-25)),((coord_x_nave1 + 20),(coord_y_nave1+40)),(coord_x_nave1,coord_y_nave1+20)), 0)
+    coord_x_nave1 += speed_x_nave1
+    coord_y_nave1 += speed_y_nave1
 
-        if event.key == pygame.K_RIGHT:
-            speed_x = 3
-            coord_x += speed_x
-
-        if event.key == pygame.K_UP:
-            speed_y = -3
-            coord_y += speed_y
-
-        if event.key == pygame.K_DOWN:
-            speed_y = 3
-            coord_y += speed_y
-
-    if event.type == pygame.KEYUP:
-        if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-            speed_x = 0
-
-
-    pygame.draw.polygon(screen, YELLOW, (((coord_x-20),(coord_y+40)),((coord_x),(coord_y-25)),((coord_x + 20),(coord_y+40)),(coord_x,coord_y+20)), 0)
-    
+    pygame.draw.polygon(screen, RED, (((coord_x_nave2-20),(coord_y_nave2+40)),((coord_x_nave2),(coord_y_nave2-25)),((coord_x_nave2 + 20),(coord_y_nave2+40)),(coord_x_nave2,coord_y_nave2+20)), 0)
+    coord_x_nave2 += speed_x_nave2
+    coord_y_nave2 += speed_y_nave2
     # =============================================================================
 
     pygame.display.flip()
